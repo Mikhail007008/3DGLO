@@ -38,5 +38,5 @@ window.addEventListener('DOMContentLoaded', function(){
 		setInterval(updateClock, 1000);
 	}
 
-	countTimer('11 september 2021');
+	countTimer('12 september 2021');
 });
