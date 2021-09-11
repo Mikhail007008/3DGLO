@@ -5,16 +5,16 @@ const date = new Date(),
 
 const foo = () =>{
 	if(hour < 4){
-		console.log('Доброй ночи');
+		return 'Доброй ночи';
 	}
 	else if(hour < 11 ){
-		console.log('Доброе утро');
+		return 'Доброе утро';
 	}else if(hour < 17 ){
-		console.log('Добрый день');
+		return 'Добрый день';
 	}else if(hour < 22 ){
-		console.log('Добрый вечер');
+		return 'Добрый вечер';
 	}else{
-		console.log('Доброй ночи');
+		return 'Доброй ночи';
 	}
 };
 
@@ -34,7 +34,10 @@ const howMuch = (howManyDaysTo) =>{
 	return day + 1;
 };
 
-foo();
-console.log(`Сегодня: ${getDay(date)}`);
-console.log(`Текущее время: ${date.toLocaleTimeString('en')}`);
-console.log(`До нового года осталось ${howMuch('January 01 2022')} дней`);
+let div = document.createElement('div');
+document.body.appendChild(div);	
+div.innerHTML = foo() + '<br>' + 'Сегодня: ' + getDay(date) + '<br>' + 
+'Текущее время: ' + date.toLocaleTimeString('en') + '<br>' +
+'До нового года осталось ' + howMuch('January 01 2022') + 'дней';
+
+
