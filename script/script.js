@@ -3,14 +3,14 @@ window.addEventListener('DOMContentLoaded', function(){
 	'use strict';
 
 	//Timer
-	function countTimer(deadline){
+	const countTimer = deadline =>{
 
-		let timerHours = document.querySelector('#timer-hours'),
+		const timerHours = document.querySelector('#timer-hours'),
 			timerMinutes = document.querySelector('#timer-minutes'),
 			timerSeconds = document.querySelector('#timer-seconds');
 		
 
-		function getTimeRemaining(){
+		const getTimeRemaining = () =>{
 			let	dateStop = new Date(deadline).getTime(),
 				dateNow = new Date().getTime(),
 				timeRemaining = (dateStop - dateNow) / 1000,
@@ -19,17 +19,12 @@ window.addEventListener('DOMContentLoaded', function(){
 				hours = Math.floor(timeRemaining / 60 / 60);
 
 			return {dateNow, dateStop, timeRemaining, hours, minutes, seconds};
-		}
+		};
 
-		function zero(number){
-			if(number < 10){
-				return '0' + number;
-			}
-			return number;
-		}
+		const zero= number => number < 10 ? `0${number}` : number;
 
-		function updateClock(){
-			let timer = getTimeRemaining();
+		const updateClock = () =>{
+			const timer = getTimeRemaining();
 
 			if(timer.timeRemaining > 0){
 				timerHours.textContent = zero(timer.hours);
@@ -41,10 +36,10 @@ window.addEventListener('DOMContentLoaded', function(){
 				timerMinutes.textContent = '00';
 				timerSeconds.textContent = '00';
 			}
-		}
+		};
 
 		setInterval(updateClock);
-	}
+	};
 
-	countTimer('12 september 2021');
+	countTimer('14 september 2021');
 });
