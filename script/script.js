@@ -48,7 +48,7 @@ window.addEventListener('DOMContentLoaded', function(){
 		const btnMenu = document.querySelector('.menu'),
 			menu = document.querySelector('menu'),
 			closeBtn = document.querySelector('.close-btn'),
-			menuItems = menu.querySelectorAll('ul>li');
+			menuItems = menu.querySelectorAll('li>a');
 
 		const handlerMenu = () =>{
 			menu.classList.toggle('active-menu');
@@ -74,7 +74,7 @@ window.addEventListener('DOMContentLoaded', function(){
 
 		popupBtn.forEach((elem) =>{
 			elem.addEventListener('click', () =>{
-				if(screen.width > 768){
+				if(window.innerWidth > 768){
 					popup.style.display = 'block';
 
 					const start = Date.now();
