@@ -75,7 +75,6 @@ window.addEventListener('DOMContentLoaded', function(){
 		popupBtn.forEach((elem) =>{
 			elem.addEventListener('click', () =>{
 				if(window.innerWidth > 768){
-					popup.style.display = 'block';
 
 					const start = Date.now();
 
