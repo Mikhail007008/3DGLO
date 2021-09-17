@@ -45,19 +45,29 @@ window.addEventListener('DOMContentLoaded', function(){
 
 	//Menu
 	const toggleMenu = () =>{
-		const btnMenu = document.querySelector('.menu'),
-			menu = document.querySelector('menu'),
-			closeBtn = document.querySelector('.close-btn'),
+		const menu = document.querySelector('menu'),
 			menuItems = menu.querySelectorAll('li>a');
 
 		const handlerMenu = () =>{
 			menu.classList.toggle('active-menu');
 		};
 
-		btnMenu.addEventListener('click', handlerMenu);
-		closeBtn.addEventListener('click', handlerMenu);
+		document.addEventListener('click', (event) =>{
+			let target = event.target,
+			 foo = target.closest('.menu');
 
-		menuItems.forEach((elem) => elem.addEventListener('click', handlerMenu));
+			if(foo){handlerMenu();}
+
+			if (target === event.target.closest('.close-btn')){
+				handlerMenu();
+			}
+
+			menuItems.forEach((item) =>{
+				if(item === target){
+					handlerMenu();
+				}
+			});
+		});
 
 	};
 
@@ -72,6 +82,7 @@ window.addEventListener('DOMContentLoaded', function(){
 		popupBtn.forEach((elem) =>{
 			elem.addEventListener('click', () =>{
 				if(window.innerWidth > 768){
+					popupContent.style.left = 0;
 
 					const start = Date.now();
 
@@ -84,7 +95,9 @@ window.addEventListener('DOMContentLoaded', function(){
 			
 					}, 20);
 				}
-				popup.style.display = 'block';				
+
+				popup.style.display = 'block';
+				
 			});
 		});
 
@@ -95,13 +108,12 @@ window.addEventListener('DOMContentLoaded', function(){
 				popup.style.display = 'none';
 			}else{
 				target = target.closest('.popup-content');
-				
+
 				if(!target){
-					popup.style.display = 'none';	
+					popup.style.display = 'none';
 				}
 			}
 		});
-
 	};
 
 	togglePopup();
@@ -119,9 +131,11 @@ window.addEventListener('DOMContentLoaded', function(){
 			for(let i =0; i < tabContent.length; i++){
 
 				if(index === i){
+
 					tab[i].classList.add('active');
 					tabContent[i].classList.remove('d-none');
 				}else{
+
 					tab[i].classList.remove('active');
 					tabContent[i].classList.add('d-none');
 				}
@@ -133,7 +147,8 @@ window.addEventListener('DOMContentLoaded', function(){
 			let target = event.target;
 				target = target.closest('.service-header-tab');
 			
-			if(target){			
+			if(target){
+			
 				tab.forEach((item, i) =>{
 					if(item === target){
 						toggleTabContent(i);
