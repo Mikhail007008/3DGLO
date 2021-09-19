@@ -184,7 +184,7 @@ window.addEventListener('DOMContentLoaded', function(){
 		};
 		newDot();
 
-		let dot = document.querySelectorAll('.dot');
+		const dot = document.querySelectorAll('.dot');
 
 		const prevSlide = (elem, index, strClass) =>{
 			elem[index].classList.remove(strClass);
