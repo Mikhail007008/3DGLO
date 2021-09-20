@@ -259,7 +259,7 @@ window.addEventListener('DOMContentLoaded', function(){
 		slider.addEventListener('mouseout', (event) =>{
 			if(event.target.matches('.portfolio-btn') || 
 			event.target.matches('.dot')){
-				startSlide();
+				startSlide(1500);
 			}
 		});
 		startSlide(1500);
