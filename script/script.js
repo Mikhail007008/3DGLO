@@ -303,41 +303,50 @@ window.addEventListener('DOMContentLoaded', function(){
 			topForm = document.querySelectorAll('.top-form'),
 			mess = document.querySelector('.mess');
 
-		footerFormInput.addEventListener('input', ()=>{
+		const checkInp = (elem) =>{
+			if(elem.getAttribute('name') === 'user_name' || elem.getAttribute('name') === 'user_message'){
+				elem.value = elem.value.replace(/[^А-Яа-я- ]/g, '');
+			}else if(elem.getAttribute('name') === 'user_email'){
+				elem.value = elem.value.replace(/[^A-Za-z-@_.!~*']/g, '');
+			}else if(elem.getAttribute('name') === 'user_phone'){
+				elem.value = elem.value.replace(/[^0-9)(-]/g, '');
+			}
+		};
+
+		const blur = (elem) =>{
+				elem.value = elem.value.replace(/^ | $|^-|-$/g, '');
+				elem.value = elem.value.replace(/\s+/g, ' ');
+				elem.value = elem.value.replace(/-+/g, '-');
+				
+				if(elem.getAttribute('name') === 'user_name'){
+					elem.value = elem.value.replace(/(^\D|\s\D)(\S*)/g, 
+					(_,a1,a2) => a1.toUpperCase() + a2.toLowerCase());
+				}
+		};
+
+		footerFormInput.addEventListener('input', () =>{
+
 			const target = event.target,
-				topFormMatch = target.closest('.top-form'),
-				messMatch = target.closest('.mess');
+				messMatch = target.closest('.mess'),
+				topFormMatch = target.closest('.top-form');
 
 			if(topFormMatch){
 				topForm.forEach((elem) =>{
+					checkInp(elem);
 					elem.onblur = () =>{
-						elem.value = elem.value.replace(/^ | $|^-|-$/g, '');
-						elem.value = elem.value.replace(/\s+/g, ' ');
-						elem.value = elem.value.replace(/-+/g, '-');
-						if(elem.getAttribute('name') === 'user_name'){
-							elem.value = elem.value.replace(/(^\D|\s\D)(\S*)/g, 
-							(_,a1,a2) => a1.toUpperCase() + a2.toLowerCase());
-						}
+						(blur(elem));
 					};
-					if(elem.getAttribute('name') === 'user_name'){
-						elem.value = elem.value.replace(/[^А-Яа-я- ]/g, '');
-					}else if(elem.getAttribute('name') === 'user_email'){
-						elem.value = elem.value.replace(/[^A-Za-z-@_.!~*']/g, '');
-					}else if(elem.getAttribute('name') === 'user_phone'){
-						elem.value = elem.value.replace(/[^0-9)(-]/g, '');
-					}
-				});	
-				}else if(messMatch){
-					mess.onblur = () =>{
-						mess.value = mess.value.replace(/^ | $|^-|-$/g, '');
-						mess.value = mess.value.replace(/\s+/g, ' ');
-						mess.value = mess.value.replace(/-+/g, '-');
-					};
-					mess.value = mess.value.replace(/[^А-Яа-я- ]/g, '');
-				}
+				});
+
+			}else if(messMatch){
+				checkInp(mess);
+				mess.onblur = () =>{
+					(blur(mess));
+				};
+			}
 		});
 	};
 
 	connect();
-	
+
 });
