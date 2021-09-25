@@ -266,4 +266,78 @@ window.addEventListener('DOMContentLoaded', function(){
 	};
 
 	slider();
+
+	//our team
+	const team = () =>{
+		const commandPhoto = document.querySelectorAll('.command__photo');
+
+		commandPhoto.forEach((elem)=>{
+			elem.setAttribute('data-src', elem.getAttribute('src'));
+
+			elem.addEventListener('mouseenter', event =>{event.target.src = event.target.dataset.img;});
+			elem.addEventListener('mouseleave', event =>{event.target.src = event.target.dataset.src;});
+		});
+
+	};
+
+	team();
+
+	//calculate
+	const calc = () =>{
+
+		const calcItem = document.querySelectorAll('.calc-item');
+
+		calcItem.forEach((elem) =>{
+			if(elem.hasAttribute('type')){
+				elem.addEventListener('input', () => elem.value = elem.value.replace(/\D/g, ''));
+			}
+		});
+	};
+
+	calc();
+
+	//connect
+	const connect = () =>{
+
+		const footerFormInput = document.querySelector('.footer-form-input'),
+			topForm = document.querySelectorAll('.top-form'),
+			mess = document.querySelector('.mess');
+
+		footerFormInput.addEventListener('input', ()=>{
+			const target = event.target,
+				topFormMatch = target.closest('.top-form'),
+				messMatch = target.closest('.mess');
+
+			if(topFormMatch){
+				topForm.forEach((elem) =>{
+					elem.onblur = () =>{
+						elem.value = elem.value.replace(/^ | $|^-|-$/g, '');
+						elem.value = elem.value.replace(/\s+/g, ' ');
+						elem.value = elem.value.replace(/-+/g, '-');
+						if(elem.getAttribute('name') === 'user_name'){
+							elem.value = elem.value.replace(/(^\D|\s\D)(\S*)/g, 
+							(_,a1,a2) => a1.toUpperCase() + a2.toLowerCase());
+						}
+					};
+					if(elem.getAttribute('name') === 'user_name'){
+						elem.value = elem.value.replace(/[^А-Яа-я- ]/g, '');
+					}else if(elem.getAttribute('name') === 'user_email'){
+						elem.value = elem.value.replace(/[^A-Za-z-@_.!~*']/g, '');
+					}else if(elem.getAttribute('name') === 'user_phone'){
+						elem.value = elem.value.replace(/[^0-9)(-]/g, '');
+					}
+				});	
+				}else if(messMatch){
+					mess.onblur = () =>{
+						mess.value = mess.value.replace(/^ | $|^-|-$/g, '');
+						mess.value = mess.value.replace(/\s+/g, ' ');
+						mess.value = mess.value.replace(/-+/g, '-');
+					};
+					mess.value = mess.value.replace(/[^А-Яа-я- ]/g, '');
+				}
+		});
+	};
+
+	connect();
+	
 });
