@@ -333,16 +333,12 @@ window.addEventListener('DOMContentLoaded', function(){
 			if(topFormMatch){
 				topForm.forEach((elem) =>{
 					checkInp(elem);
-					elem.onblur = () =>{
-						(blur(elem));
-					};
+					elem.onblur = () => blur(elem);
 				});
 
 			}else if(messMatch){
 				checkInp(mess);
-				mess.onblur = () =>{
-					(blur(mess));
-				};
+				mess.onblur = () => blur(mess);
 			}
 		});
 	};
