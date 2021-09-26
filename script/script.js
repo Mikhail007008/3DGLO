@@ -308,7 +308,7 @@ window.addEventListener('DOMContentLoaded', function(){
 		};
 
 		const blur = (elem) =>{
-				elem.value = elem.value.replace(/^ | $|^-|-$/g, '');
+				elem.value = elem.value.replace(/^ +| +$|^-+|-+$/g, '');
 				elem.value = elem.value.replace(/\s+/g, ' ');
 				elem.value = elem.value.replace(/-+/g, '-');
 				
