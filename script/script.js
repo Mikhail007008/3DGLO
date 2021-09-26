@@ -301,9 +301,9 @@ window.addEventListener('DOMContentLoaded', function(){
 			if(elem.getAttribute('name') === 'user_name' || elem.getAttribute('name') === 'user_message'){
 				elem.value = elem.value.replace(/[^А-Яа-я- ]/g, '');
 			}else if(elem.getAttribute('name') === 'user_email'){
-				elem.value = elem.value.replace(/[^A-Za-z-@_.!~*']/g, '');
+				elem.value = elem.value.replace(/[^A-Za-z-@_!~'\*\.]/g, '');
 			}else if(elem.getAttribute('name') === 'user_phone'){
-				elem.value = elem.value.replace(/[^0-9)(-]/g, '');
+				elem.value = elem.value.replace(/[^0-9\)\(-]/g, '');
 			}
 		};
 
