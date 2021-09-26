@@ -127,7 +127,6 @@ window.addEventListener('DOMContentLoaded', function(){
 			tabContent = document.querySelectorAll('.service-tab');
 
 		const toggleTabContent = (index) =>{
-
 			for(let i =0; i < tabContent.length; i++){
 
 				if(index === i){
@@ -143,7 +142,6 @@ window.addEventListener('DOMContentLoaded', function(){
 		};
 
 		tabHeader.addEventListener('click', (event) =>{
-
 			let target = event.target;
 				target = target.closest('.service-header-tab');
 			
@@ -195,7 +193,6 @@ window.addEventListener('DOMContentLoaded', function(){
 		};
 
 		const autoPlaySlide = () =>{
-
 			prevSlide(slide, currentSlide, 'portfolio-item-active');
 			prevSlide(dot, currentSlide, 'dot-active');
 			currentSlide++;
@@ -284,7 +281,6 @@ window.addEventListener('DOMContentLoaded', function(){
 
 	//calculate
 	const calc = () =>{
-
 		const calcItem = document.querySelectorAll('.calc-item');
 
 		calcItem.forEach((elem) =>{
@@ -298,10 +294,8 @@ window.addEventListener('DOMContentLoaded', function(){
 
 	//connect
 	const connect = () =>{
-
 		const footerFormInput = document.querySelector('.footer-form-input'),
-			topForm = document.querySelectorAll('.top-form'),
-			mess = document.querySelector('.mess');
+			inputs = document.querySelectorAll('input');
 
 		const checkInp = (elem) =>{
 			if(elem.getAttribute('name') === 'user_name' || elem.getAttribute('name') === 'user_message'){
@@ -325,20 +319,15 @@ window.addEventListener('DOMContentLoaded', function(){
 		};
 
 		footerFormInput.addEventListener('input', () =>{
-
 			const target = event.target,
-				messMatch = target.closest('.mess'),
-				topFormMatch = target.closest('.top-form');
+				footerFormInput = target.closest('.footer-form-input');
 
-			if(topFormMatch){
-				topForm.forEach((elem) =>{
+			if(footerFormInput){
+				
+				inputs.forEach((elem) =>{
 					checkInp(elem);
 					elem.onblur = () => blur(elem);
 				});
-
-			}else if(messMatch){
-				checkInp(mess);
-				mess.onblur = () => blur(mess);
 			}
 		});
 	};
