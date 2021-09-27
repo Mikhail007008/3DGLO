@@ -333,12 +333,14 @@ window.addEventListener('DOMContentLoaded', function(){
 
 	//connect
 	const connect = () =>{
-		const footerFormInput = document.querySelector('.footer-form-input'),
+		const body = document.querySelector('body'),
 			inputs = document.querySelectorAll('input');
 
 		const checkInp = (elem) =>{
-			if(elem.getAttribute('name') === 'user_name' || elem.getAttribute('name') === 'user_message'){
+			if(elem.getAttribute('name') === 'user_name'){
 				elem.value = elem.value.replace(/[^А-Яа-я- ]/g, '');
+			}else if(elem.getAttribute('name') === 'user_message'){
+				elem.value = elem.value.replace(/[^А-Яа-я- ,\.]/g, '');
 			}else if(elem.getAttribute('name') === 'user_email'){
 				elem.value = elem.value.replace(/[^A-Za-z-@_!~'\*\.]/g, '');
 			}else if(elem.getAttribute('name') === 'user_phone'){
@@ -357,11 +359,11 @@ window.addEventListener('DOMContentLoaded', function(){
 				}
 		};
 
-		footerFormInput.addEventListener('input', () =>{
+		body.addEventListener('input', () =>{
 			const target = event.target,
-				footerFormInput = target.closest('.footer-form-input');
+				body = target.closest('body');
 
-			if(footerFormInput){
+			if(body){
 				
 				inputs.forEach((elem) =>{
 					checkInp(elem);
