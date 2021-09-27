@@ -127,7 +127,6 @@ window.addEventListener('DOMContentLoaded', function(){
 			tabContent = document.querySelectorAll('.service-tab');
 
 		const toggleTabContent = (index) =>{
-
 			for(let i =0; i < tabContent.length; i++){
 
 				if(index === i){
@@ -143,7 +142,6 @@ window.addEventListener('DOMContentLoaded', function(){
 		};
 
 		tabHeader.addEventListener('click', (event) =>{
-
 			let target = event.target;
 				target = target.closest('.service-header-tab');
 			
@@ -195,7 +193,6 @@ window.addEventListener('DOMContentLoaded', function(){
 		};
 
 		const autoPlaySlide = () =>{
-
 			prevSlide(slide, currentSlide, 'portfolio-item-active');
 			prevSlide(dot, currentSlide, 'dot-active');
 			currentSlide++;
@@ -266,4 +263,114 @@ window.addEventListener('DOMContentLoaded', function(){
 	};
 
 	slider();
+
+	//our team
+	const team = () =>{
+		const commandPhoto = document.querySelectorAll('.command__photo');
+
+		commandPhoto.forEach((elem)=>{
+			elem.setAttribute('data-src', elem.getAttribute('src'));
+
+			elem.addEventListener('mouseenter', event =>{event.target.src = event.target.dataset.img;});
+			elem.addEventListener('mouseleave', event =>{event.target.src = event.target.dataset.src;});
+		});
+
+	};
+
+	team();
+
+	//calculate
+	const calc = (price = 100) =>{
+		const calcItem = document.querySelectorAll('.calc-item'),
+			calcBlock = document.querySelector('.calc-block'),
+			calcType = document.querySelector('.calc-type'),
+			calcSquare = document.querySelector('.calc-square'),
+			calcDay = document.querySelector('.calc-day'),
+			calcCount = document.querySelector('.calc-count'),
+			totalValue = document.getElementById('total');
+
+		const countSum = () =>{
+			let total = 0,
+				countValue = 1,
+				dayValue = 1;
+			
+			const typeValue = calcType.options[calcType.selectedIndex].value,
+				squareValue = +calcSquare.value;
+
+			if(calcCount.value > 1){
+				countValue += (calcCount.value - 1) / 10;
+			}
+
+			if(calcDay.value && calcDay.value < 5){
+				dayValue *= 2;
+			} else if(calcDay.value && calcDay.value < 10){
+				dayValue *= 1.5;
+			}
+
+			if(typeValue && squareValue){
+				total = price * typeValue * squareValue * countValue * dayValue;
+			} 
+
+			totalValue.textContent = total;
+		};
+
+		calcBlock.addEventListener('change', (event) =>{
+			const target = event.target;
+
+			if(target.matches('select') || target.matches('input')){
+				countSum();
+			}
+		});
+
+		calcItem.forEach((elem) =>{
+			if(elem.hasAttribute('type')){
+				elem.addEventListener('input', () => elem.value = elem.value.replace(/\D/g, ''));
+			}
+		});
+	};
+
+	calc(100);
+
+	//connect
+	const connect = () =>{
+		const footerFormInput = document.querySelector('.footer-form-input'),
+			inputs = document.querySelectorAll('input');
+
+		const checkInp = (elem) =>{
+			if(elem.getAttribute('name') === 'user_name' || elem.getAttribute('name') === 'user_message'){
+				elem.value = elem.value.replace(/[^А-Яа-я- ]/g, '');
+			}else if(elem.getAttribute('name') === 'user_email'){
+				elem.value = elem.value.replace(/[^A-Za-z-@_!~'\*\.]/g, '');
+			}else if(elem.getAttribute('name') === 'user_phone'){
+				elem.value = elem.value.replace(/[^0-9\)\(-]/g, '');
+			}
+		};
+
+		const blur = (elem) =>{
+				elem.value = elem.value.replace(/^ +| +$|^-+|-+$/g, '');
+				elem.value = elem.value.replace(/\s+/g, ' ');
+				elem.value = elem.value.replace(/-+/g, '-');
+				
+				if(elem.getAttribute('name') === 'user_name'){
+					elem.value = elem.value.replace(/(^\D|\s\D)(\S*)/g, 
+					(_,a1,a2) => a1.toUpperCase() + a2.toLowerCase());
+				}
+		};
+
+		footerFormInput.addEventListener('input', () =>{
+			const target = event.target,
+				footerFormInput = target.closest('.footer-form-input');
+
+			if(footerFormInput){
+				
+				inputs.forEach((elem) =>{
+					checkInp(elem);
+					elem.onblur = () => blur(elem);
+				});
+			}
+		});
+	};
+
+	connect();
+
 });
