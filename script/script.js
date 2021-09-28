@@ -89,11 +89,11 @@ window.addEventListener('DOMContentLoaded', function(){
 					let timer = setInterval(() => {
 					let timePassed = Date.now() - start;
 			
-					popupContent.style.left = timePassed / 3.5 + 'px';
+					popupContent.style.left = timePassed / 1.4 + 'px';
 			
-					if (timePassed > 2000) {clearInterval(timer);}
+					if (timePassed > 800) {clearInterval(timer);}
 			
-					}, 20);
+					});
 				}
 
 				popup.style.display = 'block';
