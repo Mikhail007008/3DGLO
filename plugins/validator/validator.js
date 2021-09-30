@@ -2,7 +2,7 @@
 
 class Validator{
 	constructor({selector, pattern = {}, method}){
-		this.form = document.getElementById(selector);
+		this.form =  document.querySelector(selector);
 		this.pattern = pattern;
 		this.method = method;
 		this.elementsForm = [...this.form.elements].filter(item => {
@@ -15,7 +15,13 @@ class Validator{
 	init(){
 		this.applyStyle();
 		this.setPattern();
-		this.elementsForm.forEach(elem => elem.addEventListener('input', this.checkIt.bind(this)));
+		this.elementsForm.forEach(elem => elem.addEventListener('change', this.checkIt.bind(this)));
+		this.form.addEventListener('submit', e =>{
+			this.elementsForm.forEach(elem => this.checkIt({target: elem}));
+			if(this.error.size !== 0){
+				e.preventDefault();
+			}
+		});
 	}
 
 	isValid(elem){
@@ -31,10 +37,14 @@ class Validator{
 			}
 		};
 
-		const method = this.method[elem.id];
+		if(this.method){
+			const method = this.method[elem.id.split('-')[1]];
 
-		if(method){
-			return method.every(item =>validatorMethod[item[0]](elem, this.pattern[item[1]]));
+			if(method){
+				return method.every(item =>validatorMethod[item[0]](elem, this.pattern[item[1]]));
+			}
+		}else{
+			console.warn('Необходимо передать id полей ввода и методы проверки этих полей!');
 		}
 
 		return true;
@@ -42,7 +52,7 @@ class Validator{
 
 	checkIt(event){
 		const target = event.target;
-		console.log(this);
+
 		if(this.isValid(target)){
 			this.showSuccess(target);
 			this.error.delete(target);
@@ -55,10 +65,10 @@ class Validator{
 	showError(elem){
 		elem.classList.remove('success');
 		elem.classList.add('error');
-		console.log(elem);
-		if(elem.nextElementSibling){
-			return;
-		}
+
+		if(elem.nextElementSibling && elem.nextElementSibling.classList.contains('validator-error')){
+			return;}
+
 		const errorDiv = document.createElement('div');
 		errorDiv.textContent = 'Ошибка в этом поле';
 		errorDiv.classList.add('validator-error');
@@ -68,9 +78,8 @@ class Validator{
 	showSuccess(elem){
 		elem.classList.remove('error');
 		elem.classList.add('success');
-		if(elem.nextElementSibling){
-			elem.nextElementSibling.remove();
-		}
+			if(elem.nextElementSibling && elem.nextElementSibling.classList.contains('validator-error')){
+				elem.nextElementSibling.remove('validator-error');}
 	}
 
 	applyStyle(){
@@ -85,7 +94,8 @@ class Validator{
 		.validator-error {
 			font-size: 12px;
 			font-family: sans-serif;
-			color: red
+			color: red;
+			margin-top: -30px
 		}
 		`;
 
@@ -94,11 +104,19 @@ class Validator{
 
 	setPattern(){
 		if(!this.pattern.name){
-			this.pattern.name = /^[78]/;
+			this.pattern.name = /^[а-яА-Я]/;
 		}
 
 		if(!this.pattern.email){
 			this.pattern.email = /^\w+@\w+\.\w{2,}$/;
+		}
+				
+		if(!this.pattern.phone){
+			this.pattern.phone = /^\+?[78]([-()]*\d){10}$/;
+		}		
+
+		if(!this.pattern.mess){
+			this.pattern.mess = /^[а-яА-Я]/;
 		}		
 	}
 }

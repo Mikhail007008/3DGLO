@@ -412,8 +412,8 @@
 </div>
 <script src="./plugins/validator/validator.js"></script>
 <script>
-
-	const valid = new Validator({
+	const validForm1 = new Validator({
+		selector: '#form1',
 		pattern: {
 			name: /^\+380\d{7}$/,
 			zip: /\d{5,6}/
@@ -426,13 +426,64 @@
 			'email': [
 				['notEmpty'],
 				['pattern', 'email']
+			],
+			'phone': [
+				['notEmpty'],
+				['pattern', 'phone']
 			]
-		},
-		selector: 'form1'
+		}
 	});
-
-	valid.init();
+	const validForm2 = new Validator({
+		selector: '#form2',
+		pattern: {
+			name: /^\+380\d{7}$/,
+			zip: /\d{5,6}/
+		},
+		method: {
+			'name': [
+				['notEmpty'],
+				['pattern', 'name']
+			],
+			'email': [
+				['notEmpty'],
+				['pattern', 'email']
+			],
+			'phone': [
+				['notEmpty'],
+				['pattern', 'phone']
+			]
+		}
+	});
+	const validForm3 = new Validator({
+		selector: '#form3',
+		pattern: {
+			name: /^\+380\d{7}$/,
+			zip: /\d{5,6}/
+		},
+		method: {
+			'name': [
+				['notEmpty'],
+				['pattern', 'name']
+			],
+			'email': [
+				['notEmpty'],
+				['pattern', 'email']
+			],
+			'phone': [
+				['notEmpty'],
+				['pattern', 'phone']
+			],
+			'mess': [
+				['notEmpty'],
+				['pattern', 'mess']
+			]
+		}
+	});
+	
+	validForm1.init();
+	validForm2.init();
+	validForm3.init();
 </script>
-<!-- <script src="./script/script.js"></script> -->
+<script src="./script/script.js"></script>
 </body>
 </html>
