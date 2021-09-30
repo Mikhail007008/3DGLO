@@ -415,8 +415,10 @@
 	const validForm1 = new Validator({
 		selector: '#form1',
 		pattern: {
-			name: /^\+380\d{7}$/,
-			zip: /\d{5,6}/
+			name: /[а-я]/gi,
+			phone: /^\+\d{10}$/,
+			zip: /\d{5,6}/,
+			email: /[\w\s@]/
 		},
 		method: {
 			'name': [
@@ -439,8 +441,7 @@
 			name: /[а-я]/gi,
 			phone: /^\+\d{10}$/,
 			zip: /\d{5,6}/,
-			email: /[\w\s@]/,
-			mess: /[а-я]/gi
+			email: /[\w\s@]/
 		},
 		method: {
 			'name': [
@@ -460,8 +461,11 @@
 	const validForm3 = new Validator({
 		selector: '#form3',
 		pattern: {
-			name: /^\+380\d{7}$/,
-			zip: /\d{5,6}/
+			name: /[а-я]/gi,
+			phone: /^\+\d{10}$/,
+			zip: /\d{5,6}/,
+			email: /[\w\s@]/,
+			mess: /[а-я]/gi
 		},
 		method: {
 			'name': [
