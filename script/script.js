@@ -439,9 +439,7 @@ window.addEventListener('DOMContentLoaded', function(){
 				});
 			
 		});
-
-		
-			
+	
 		const postData = (body, outputData, errorData) =>{
 			const request = new XMLHttpRequest();
 
