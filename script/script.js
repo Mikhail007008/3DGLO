@@ -340,11 +340,11 @@ window.addEventListener('DOMContentLoaded', function(){
 			if(elem.getAttribute('name') === 'user_name'){
 				elem.value = elem.value.replace(/[^А-Яа-я- ]/g, '');
 			}else if(elem.getAttribute('name') === 'user_message'){
-				elem.value = elem.value.replace(/[^А-Яа-я- ,\.]/g, '');
+				elem.value = elem.value.replace(/[^А-Яа-я0-9- ,\.]/g, '');
 			}else if(elem.getAttribute('name') === 'user_email'){
 				elem.value = elem.value.replace(/[^A-Za-z-@_!~'\*\.]/g, '');
 			}else if(elem.getAttribute('name') === 'user_phone'){
-				elem.value = elem.value.replace(/[^0-9\)\(-]/g, '');
+				elem.value = elem.value.replace(/[^0-9\)\(+-]/g, '');
 			}
 		};
 
@@ -359,7 +359,7 @@ window.addEventListener('DOMContentLoaded', function(){
 				}
 		};
 
-		body.addEventListener('input', () =>{
+		body.addEventListener('input', (event) =>{
 			const target = event.target,
 				body = target.closest('body');
 
@@ -374,5 +374,107 @@ window.addEventListener('DOMContentLoaded', function(){
 	};
 
 	connect();
+
+	//send ajax-form
+	const sendForm = (selector) =>{
+		const errorMessage = 'Что то пошло не так...',
+			loadMessage = 'Загрузка...',
+			succesMessage = 'Спасибо! Мы скоро с вами свяжемся!';
+
+		const form = document.getElementById(selector),
+			inputs = document.querySelectorAll('input'),
+			statusMessage = document.createElement('div');
+			statusMessage.style.cssText = `font-size: 2rem; color: #fff`;
+
+			const validator = (elem) =>{
+				const patternPhone = /[^0-9\+]/,
+					patternName = /[^а-яА-Я ]/,
+					patternMess = /[^а-яА-Я0-9\.,]/;
+	
+				if(elem.getAttribute('name') === 'user_phone'){
+					if(!elem.value || patternPhone.test(elem.value)){
+						elem.style.border = 'solid red';
+					}else{
+						elem.style.border = '';
+					}
+				}else if(elem.getAttribute('name') === 'user_name'){
+					if(!elem.value || patternName.test(elem.value)){
+						elem.style.border = 'solid red';
+					}else{
+						elem.style.border = '';
+					}
+				}else if(elem.getAttribute('name') === 'user_message'){
+					if(!elem.value || patternMess.test(elem.value)){
+						elem.style.border = 'solid red';
+					}else{
+						elem.style.border = '';
+					}
+				}
+			};
+	
+			inputs.forEach(elem=>{
+				elem.addEventListener('input', ()=>{
+					validator(elem);
+				});
+			});
+
+		form.addEventListener('submit', (event) =>{
+
+			event.preventDefault();
+			form.appendChild(statusMessage);
+			statusMessage.textContent = loadMessage;
+
+			const formData = new FormData(form);
+			let body = {};
+
+			for(let val of formData.entries()){
+				body[val[0]] = val[1];
+			}
+
+			postData(body, 
+				() =>{statusMessage.textContent = succesMessage;}, 
+				(error) =>{
+					statusMessage.textContent = errorMessage;
+					console.error(error);
+				});
+			
+		});
+
+		
+			
+		const postData = (body, outputData, errorData) =>{
+			const request = new XMLHttpRequest();
+
+			request.addEventListener('readystatechange', ()=>{
+				
+				if(request.readyState !== 4){
+					return;
+				}
+				if(request.status === 200){
+					outputData();
+					
+					inputs.forEach(elem =>{
+						if(elem.getAttribute('name')){
+							elem.value = '';
+							elem.style.border = '';
+						}
+					});
+
+				} else {
+					errorData(request.status);
+				}
+			});
+
+			request.open('POST', './server.php');
+			request.setRequestHeader('Content-Type', 'application/json');
+
+			request.send(JSON.stringify(body));
+		};
+
+	};
+
+	sendForm('form1');
+	sendForm('form2');
+	sendForm('form3');
 
 });
