@@ -376,47 +376,47 @@ window.addEventListener('DOMContentLoaded', function(){
 	connect();
 
 	//send ajax-form
-	const sendForm = (selector) =>{
+	const sendForm = () =>{
 		const errorMessage = 'Что то пошло не так...',
 			loadMessage = 'Загрузка...',
 			succesMessage = 'Спасибо! Мы скоро с вами свяжемся!';
 
-		const form = document.getElementById(selector),
+		const form = document.getElementById('form1'),
 			inputs = document.querySelectorAll('input'),
 			statusMessage = document.createElement('div');
 			statusMessage.style.cssText = `font-size: 2rem; color: #fff`;
 
-			const validator = (elem) =>{
-				const patternPhone = /[^0-9\+]/,
-					patternName = /[^а-яА-Я ]/,
-					patternMess = /[^а-яА-Я0-9\.,]/;
+			// const validator = (elem) =>{
+			// 	const patternPhone = /[^0-9\+]/,
+			// 		patternName = /[^а-яА-Я ]/,
+			// 		patternMess = /[^а-яА-Я0-9\.,]/;
 	
-				if(elem.getAttribute('name') === 'user_phone'){
-					if(!elem.value || patternPhone.test(elem.value)){
-						elem.style.border = 'solid red';
-					}else{
-						elem.style.border = '';
-					}
-				}else if(elem.getAttribute('name') === 'user_name'){
-					if(!elem.value || patternName.test(elem.value)){
-						elem.style.border = 'solid red';
-					}else{
-						elem.style.border = '';
-					}
-				}else if(elem.getAttribute('name') === 'user_message'){
-					if(!elem.value || patternMess.test(elem.value)){
-						elem.style.border = 'solid red';
-					}else{
-						elem.style.border = '';
-					}
-				}
-			};
+			// 	if(elem.getAttribute('name') === 'user_phone'){
+			// 		if(!elem.value || patternPhone.test(elem.value)){
+			// 			elem.style.border = 'solid red';
+			// 		}else{
+			// 			elem.style.border = '';
+			// 		}
+			// 	}else if(elem.getAttribute('name') === 'user_name'){
+			// 		if(!elem.value || patternName.test(elem.value)){
+			// 			elem.style.border = 'solid red';
+			// 		}else{
+			// 			elem.style.border = '';
+			// 		}
+			// 	}else if(elem.getAttribute('name') === 'user_message'){
+			// 		if(!elem.value || patternMess.test(elem.value)){
+			// 			elem.style.border = 'solid red';
+			// 		}else{
+			// 			elem.style.border = '';
+			// 		}
+			// 	}
+			// };
 	
-			inputs.forEach(elem=>{
-				elem.addEventListener('input', ()=>{
-					validator(elem);
-				});
-			});
+			// inputs.forEach(elem=>{
+			// 	elem.addEventListener('input', ()=>{
+			// 		validator(elem);
+			// 	});
+			// });
 
 		form.addEventListener('submit', (event) =>{
 
@@ -427,9 +427,9 @@ window.addEventListener('DOMContentLoaded', function(){
 			const formData = new FormData(form);
 			let body = {};
 
-			for(let val of formData.entries()){
-				body[val[0]] = val[1];
-			}
+			formData.forEach((val, key) =>{
+				body[key] = val;
+			});
 
 			postData(body, 
 				() =>{statusMessage.textContent = succesMessage;}, 
@@ -438,6 +438,8 @@ window.addEventListener('DOMContentLoaded', function(){
 					console.error(error);
 				});
 			
+			sendForm(event);
+
 		});
 	
 		const postData = (body, outputData, errorData) =>{
@@ -471,8 +473,7 @@ window.addEventListener('DOMContentLoaded', function(){
 
 	};
 
-	sendForm('form1');
-	sendForm('form2');
-	sendForm('form3');
+	// sendForm('form2');
+	// sendForm('form3');
 
 });
