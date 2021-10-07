@@ -377,120 +377,112 @@ window.addEventListener('DOMContentLoaded', function(){
 
 	//send ajax-form
 	const sendForm = () =>{
-		const errorMessage = 'Что то пошло не так...',
+		const body = document.querySelector('body'),
+			inputs = document.querySelectorAll('input'),
+			style = document.createElement('style'),
+			statusMessage = document.createElement('div'),
+			
+			errorMessage = 'Что то пошло не так...',
 			loadMessage = 'Загрузка...',
 			succesMessage = 'Спасибо! Мы скоро с вами свяжемся!';
 
-		const form = document.getElementById('form1'),
-			inputs = document.querySelectorAll('input'),
-			statusMessage = document.createElement('div');
-			// error = new Set(),
-			// elementsForm = [...form.elements].filter(item => {
-			// 	return item.tagName.toLowerCase() !== 'button' && 
-			// 	item.type !== 'button';
-			// });
-			statusMessage.style.cssText = `font-size: 2rem; color: #fff`;
-			const style = document.createElement('style');
-				style.textContent = `
-				input.success {
-					border: 2px solid green
-				}
-				input.error {
-					border: 2px solid red
-				}
-				.validator-error {
-					font-size: 12px;
-					font-family: sans-serif;
-					color: red;
-					margin-top: -30px
-				}`;
-				document.head.appendChild(style);
+		statusMessage.style.cssText = `font-size: 2rem; color: #fff`; 
+		style.textContent = `
+		input.success {
+			border: 2px solid green
+		}
+		input.error {
+			border: 2px solid red
+		}
+		.validator-error {
+			font-size: 12px;
+			font-family: sans-serif;
+			color: red
+		}`;
+		document.head.appendChild(style);
 
-			// let isValidate = false;
+	const validator = (elem) =>{
 
-
-		const validator = (elem) =>{
-
-			const showError = (elem) =>{
-				elem.classList.remove('success');
-				elem.classList.add('error');
-		
-				if(elem.nextElementSibling && elem.nextElementSibling.classList.contains('validator-error')){
-					return;}
-		
-				const errorDiv = document.createElement('div');
-				errorDiv.textContent = 'Ошибка в этом поле';
-				errorDiv.classList.add('validator-error');
-				elem.insertAdjacentElement('afterEnd', errorDiv);
-			};
-		
-			const showSuccess = (elem) =>{
-				elem.classList.remove('error');
-				elem.classList.add('success');
-					if(elem.nextElementSibling && elem.nextElementSibling.classList.contains('validator-error')){
-						elem.nextElementSibling.remove('validator-error');}
-			};
-
-			const patternPhone = /[^0-9\+]/,
-				patternName = /[^а-яА-Я ]/,
-				patternMess = /[^а-яА-Я0-9\.,]/;
-
-				if(elem.getAttribute('name') === 'user_phone'){
-					if(!elem.value || patternPhone.test(elem.value)){
-						showError(elem);
-					}else{
-						showSuccess(elem);
-					}
-					}else if(elem.getAttribute('name') === 'user_name'){
-				if(!elem.value || patternName.test(elem.value)){
-							elem.style.border = 'solid red';
-					}else{
-						elem.style.border = '';
-					}
-					}else if(elem.getAttribute('name') === 'user_message'){
-				if(!elem.value || patternMess.test(elem.value)){
-							elem.style.border = 'solid red';
-					}else{
-						elem.style.border = '';
-					}
-				}
-
-			};
+		const showError = (elem) =>{
+			elem.classList.remove('success');
+			elem.classList.add('error');
 	
+			if(elem.nextElementSibling && elem.nextElementSibling.classList.contains('validator-error')){
+				return;}
+	
+			const errorDiv = document.createElement('div');
+			errorDiv.textContent = 'Ошибка в этом поле';
+			errorDiv.classList.add('validator-error');
+			elem.insertAdjacentElement('afterEnd', errorDiv);
+		};
+	
+		const showSuccess = (elem) =>{
+			elem.classList.remove('error');
+			elem.classList.add('success');
+				if(elem.nextElementSibling && elem.nextElementSibling.classList.contains('validator-error')){
+					elem.nextElementSibling.remove('validator-error');}
+		};
+
+		const patternPhone = /[^0-9\+]/,
+			patternName = /[^а-яА-Я ]/,
+			patternMess = /[^а-яА-Я0-9\.,]/;
+
+			if(elem.getAttribute('name') === 'user_phone'){
+				if(!elem.value || patternPhone.test(elem.value)){
+					showError(elem);
+				}else{
+					showSuccess(elem);
+				}
+			}else if(elem.getAttribute('name') === 'user_name'){
+				if(!elem.value || patternName.test(elem.value)){
+					showError(elem);
+				}else{
+					showSuccess(elem);
+				}
+			}else if(elem.getAttribute('name') === 'user_message'){
+				if(!elem.value || patternMess.test(elem.value)){
+					showError(elem);
+				}else{
+					showSuccess(elem);
+				}
+			}
+
+		};
+
 		inputs.forEach(elem=>{
 				elem.addEventListener('input', ()=>{
 					validator(elem);
 				});
 			});
 
-		form.addEventListener('submit', (event) =>{
+		body.addEventListener('submit', (event) =>{
+			let target = event.target;			
 
-			event.preventDefault();
+			if(target.matches('form') && !document.querySelector('.validator-error')){
 
-			for(let elem of form.elements){
-				
-				if(elem.nextElementSibling && elem.nextElementSibling.classList.contains('validator-error')){
-					event.preventDefault();
-				}
+				event.preventDefault();
+
+				target.appendChild(statusMessage);
+				statusMessage.textContent = loadMessage;
+
+				const formData = new FormData(target);
+				let body = {};
+
+				formData.forEach((val, key) =>{
+					body[key] = val;
+				});
+
+				postData(body, 
+					() =>{statusMessage.textContent = succesMessage;}, 
+					(error) =>{
+						statusMessage.textContent = errorMessage;
+						console.error(error);
+					});
+
+			} else{
+				event.preventDefault();
 			}
 
-			form.appendChild(statusMessage);
-			statusMessage.textContent = loadMessage;
-
-			const formData = new FormData(form);
-			let body = {};
-
-			formData.forEach((val, key) =>{
-				body[key] = val;
-			});
-
-			postData(body, 
-				() =>{statusMessage.textContent = succesMessage;}, 
-				(error) =>{
-					statusMessage.textContent = errorMessage;
-					console.error(error);
-				});
-			
 		});
 	
 		const postData = (body, outputData, errorData) =>{
@@ -522,27 +514,8 @@ window.addEventListener('DOMContentLoaded', function(){
 			request.send(JSON.stringify(body));
 		};
 
-
-
-		// const body = document.querySelector('body');
-		// body.addEventListener('submit', (event)=>{
-			
-		// 	for(let elem of form.elements){
-		// 		if(elem.tagName !== 'button' && elem.nextElementSibling &&
-		// 		 elem.nextElementSibling.classList.contains('validator-error')){
-		// 				event.preventDefault();
-		// 		}
-		// 		sendForm();
-
-		// 	}
-
-			
-			
-		// });
-		
 	};
+
 	sendForm();
-	// sendForm('form2');
-	// sendForm('form3');
 
 });
