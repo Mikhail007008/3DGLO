@@ -499,7 +499,7 @@ window.addEventListener('DOMContentLoaded', function(){
 					inputs.forEach(elem =>{
 						if(elem.getAttribute('name')){
 							elem.value = '';
-							elem.style.border = '';
+							elem.classList.remove('success');
 						}
 					});
 
