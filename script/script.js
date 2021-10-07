@@ -474,6 +474,7 @@ window.addEventListener('DOMContentLoaded', function(){
 
 				postData(body, 
 					() =>{statusMessage.textContent = succesMessage;}, 
+					 
 					(error) =>{
 						statusMessage.textContent = errorMessage;
 						console.error(error);
@@ -495,6 +496,7 @@ window.addEventListener('DOMContentLoaded', function(){
 				}
 				if(request.status === 200){
 					outputData();
+					setTimeout(()=>statusMessage.textContent = '', 3000);
 					
 					inputs.forEach(elem =>{
 						if(elem.getAttribute('name')){
