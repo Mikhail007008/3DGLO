@@ -340,11 +340,11 @@ window.addEventListener('DOMContentLoaded', function(){
 			if(elem.getAttribute('name') === 'user_name'){
 				elem.value = elem.value.replace(/[^А-Яа-я- ]/g, '');
 			}else if(elem.getAttribute('name') === 'user_message'){
-				elem.value = elem.value.replace(/[^А-Яа-я- ,\.]/g, '');
+				elem.value = elem.value.replace(/[^А-Яа-я0-9- ,\.]/g, '');
 			}else if(elem.getAttribute('name') === 'user_email'){
 				elem.value = elem.value.replace(/[^A-Za-z-@_!~'\*\.]/g, '');
 			}else if(elem.getAttribute('name') === 'user_phone'){
-				elem.value = elem.value.replace(/[^0-9\)\(-]/g, '');
+				elem.value = elem.value.replace(/[^0-9\)\(+-]/g, '');
 			}
 		};
 
@@ -359,7 +359,7 @@ window.addEventListener('DOMContentLoaded', function(){
 				}
 		};
 
-		body.addEventListener('input', () =>{
+		body.addEventListener('input', (event) =>{
 			const target = event.target,
 				body = target.closest('body');
 
@@ -374,5 +374,144 @@ window.addEventListener('DOMContentLoaded', function(){
 	};
 
 	connect();
+
+	//send ajax-form
+	const sendForm = () =>{
+		const body = document.querySelector('body'),
+			inputs = document.querySelectorAll('input'),
+			style = document.createElement('style'),
+			statusMessage = document.createElement('div'),
+			
+			errorMessage = 'Что то пошло не так...',
+			loadMessage = 'Загрузка...',
+			succesMessage = 'Спасибо! Мы скоро с вами свяжемся!';
+
+		statusMessage.style.cssText = `font-size: 2rem; color: #fff`; 
+		style.textContent = `
+		input.success {
+			border: 2px solid green
+		}
+		input.error {
+			border: 2px solid red
+		}
+		.validator-error {
+			font-size: 12px;
+			font-family: sans-serif;
+			color: red
+		}`;
+		document.head.appendChild(style);
+
+	const validator = (elem) =>{
+
+		const showError = (elem) =>{
+			elem.classList.remove('success');
+			elem.classList.add('error');
+	
+			if(elem.nextElementSibling && elem.nextElementSibling.classList.contains('validator-error')){
+				return;}
+	
+			const errorDiv = document.createElement('div');
+			errorDiv.textContent = 'Ошибка в этом поле';
+			errorDiv.classList.add('validator-error');
+			elem.insertAdjacentElement('afterEnd', errorDiv);
+		};
+	
+		const showSuccess = (elem) =>{
+			elem.classList.remove('error');
+			elem.classList.add('success');
+				if(elem.nextElementSibling && elem.nextElementSibling.classList.contains('validator-error')){
+					elem.nextElementSibling.remove('validator-error');}
+		};
+
+		const patternPhone = /[^0-9\+]/,
+			patternName = /[^а-яА-Я ]/,
+			patternMess = /[^а-яА-Я0-9\.,]/;
+
+			if(elem.getAttribute('name') === 'user_phone'){
+				if(!elem.value || patternPhone.test(elem.value)){
+					showError(elem);
+				}else{
+					showSuccess(elem);
+				}
+			}else if(elem.getAttribute('name') === 'user_name'){
+				if(!elem.value || patternName.test(elem.value)){
+					showError(elem);
+				}else{
+					showSuccess(elem);
+				}
+			}else if(elem.getAttribute('name') === 'user_message'){
+				if(!elem.value || patternMess.test(elem.value)){
+					showError(elem);
+				}else{
+					showSuccess(elem);
+				}
+			}
+
+		};
+
+		inputs.forEach(elem=>{
+				elem.addEventListener('input', ()=>{
+					validator(elem);
+				});
+			});
+
+		body.addEventListener('submit', (event) =>{
+			let target = event.target;			
+
+			if(target.matches('form') && !document.querySelector('.validator-error')){
+
+				event.preventDefault();
+
+				target.appendChild(statusMessage);
+				statusMessage.textContent = loadMessage;
+
+				const formData = new FormData(target);
+				let body = {};
+
+				formData.forEach((val, key) =>{
+					body[key] = val;
+				});
+
+				postData(body)
+					.then(()=>{
+						setTimeout(()=>statusMessage.textContent = '', 3000);
+					
+						inputs.forEach(elem =>{
+							if(elem.getAttribute('name')){
+								elem.value = '';
+								elem.classList.remove('success');
+							}
+						});
+					})
+					.catch(error=>console.error(error));
+			} else{
+				event.preventDefault();
+			}
+		});
+	
+		const postData = (body) =>{
+			return new Promise((resolve, reject) =>{
+				const request = new XMLHttpRequest();
+
+				request.addEventListener('readystatechange', ()=>{
+					
+					if(request.readyState !== 4){
+						return;
+					}
+					if(request.status === 200){
+						resolve(statusMessage.textContent = succesMessage);
+					} else {
+						reject(statusMessage.textContent = errorMessage);
+					}
+				});
+
+				request.open('POST', './server.php');
+				request.setRequestHeader('Content-Type', 'application/json');
+				request.send(JSON.stringify(body));
+			});
+		};
+	};
+
+	sendForm();
 
 });
