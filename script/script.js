@@ -472,50 +472,44 @@ window.addEventListener('DOMContentLoaded', function(){
 					body[key] = val;
 				});
 
-				postData(body, 
-					() =>{statusMessage.textContent = succesMessage;}, 
-					 
-					(error) =>{
-						statusMessage.textContent = errorMessage;
-						console.error(error);
-					});
-
+				postData(body)
+					.then(()=>{
+						setTimeout(()=>statusMessage.textContent = '', 3000);
+					
+						inputs.forEach(elem =>{
+							if(elem.getAttribute('name')){
+								elem.value = '';
+								elem.classList.remove('success');
+							}
+						});
+					})
+					.catch(error=>console.error(error));
 			} else{
 				event.preventDefault();
 			}
-
 		});
 	
-		const postData = (body, outputData, errorData) =>{
-			const request = new XMLHttpRequest();
+		const postData = (body) =>{
+			return new Promise((resolve, reject) =>{
+				const request = new XMLHttpRequest();
 
-			request.addEventListener('readystatechange', ()=>{
-				
-				if(request.readyState !== 4){
-					return;
-				}
-				if(request.status === 200){
-					outputData();
-					setTimeout(()=>statusMessage.textContent = '', 3000);
+				request.addEventListener('readystatechange', ()=>{
 					
-					inputs.forEach(elem =>{
-						if(elem.getAttribute('name')){
-							elem.value = '';
-							elem.classList.remove('success');
-						}
-					});
+					if(request.readyState !== 4){
+						return;
+					}
+					if(request.status === 200){
+						resolve(statusMessage.textContent = succesMessage);
+					} else {
+						reject(statusMessage.textContent = errorMessage);
+					}
+				});
 
-				} else {
-					errorData(request.status);
-				}
+				request.open('POST', './server.php');
+				request.setRequestHeader('Content-Type', 'application/json');
+				request.send(JSON.stringify(body));
 			});
-
-			request.open('POST', './server.php');
-			request.setRequestHeader('Content-Type', 'application/json');
-
-			request.send(JSON.stringify(body));
 		};
-
 	};
 
 	sendForm();
