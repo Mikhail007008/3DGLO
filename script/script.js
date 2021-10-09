@@ -470,10 +470,11 @@ window.addEventListener('DOMContentLoaded', function(){
 					.then((response) =>{
 						if(response.status !== 200){
 							throw new Error('status network not 200');
-						}else{
+						}
+						if(response.status === 200){
 							statusMessage.textContent = succesMessage;
 							setTimeout(()=>statusMessage.textContent = '', 2000);
-							inputs.forEach(elem =>{
+							inputs.forEach((elem) =>{
 								if(elem.getAttribute('name')){
 									elem.value = '';
 									elem.classList.remove('success');
