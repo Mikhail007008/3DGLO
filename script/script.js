@@ -459,55 +459,42 @@ window.addEventListener('DOMContentLoaded', function(){
 			let target = event.target;			
 
 			if(target.matches('form') && !document.querySelector('.validator-error')){
-
 				event.preventDefault();
 
 				target.appendChild(statusMessage);
 				statusMessage.textContent = loadMessage;
 
 				const formData = new FormData(target);
-				let body = {};
-
-				formData.forEach((val, key) =>{
-					body[key] = val;
-				});
-
-				postData(body)
-					.then(()=>{
-						setTimeout(()=>statusMessage.textContent = '', 3000);
-					
-						inputs.forEach(elem =>{
-							if(elem.getAttribute('name')){
-								elem.value = '';
-								elem.classList.remove('success');
-							}
-						});
+				
+				postData(formData)
+					.then((response) =>{
+						if(response.status !== 200){
+							throw new Error('status network not 200');
+						}else{
+							statusMessage.textContent = succesMessage;
+							setTimeout(()=>statusMessage.textContent = '', 2000);
+							inputs.forEach(elem =>{
+								if(elem.getAttribute('name')){
+									elem.value = '';
+									elem.classList.remove('success');
+								}
+							});
+						}
 					})
-					.catch(error=>console.error(error));
+					.catch((error) =>{
+						statusMessage.textContent = errorMessage;
+						console.error(error);
+					});
 			} else{
 				event.preventDefault();
 			}
 		});
 	
-		const postData = (body) =>{
-			return new Promise((resolve, reject) =>{
-				const request = new XMLHttpRequest();
-
-				request.addEventListener('readystatechange', ()=>{
-					
-					if(request.readyState !== 4){
-						return;
-					}
-					if(request.status === 200){
-						resolve(statusMessage.textContent = succesMessage);
-					} else {
-						reject(statusMessage.textContent = errorMessage);
-					}
-				});
-
-				request.open('POST', './server.php');
-				request.setRequestHeader('Content-Type', 'application/json');
-				request.send(JSON.stringify(body));
+		const postData = (formData) =>{
+			return fetch('./server.php', {
+				method: 'POST',
+				headers: {'Content-Type': 'multipart/form-data'},
+				body: formData
 			});
 		};
 	};
