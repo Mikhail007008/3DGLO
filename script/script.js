@@ -468,9 +468,6 @@ window.addEventListener('DOMContentLoaded', function(){
 				
 				postData(formData)
 					.then((response) =>{
-						if(response.status !== 200){
-							throw new Error('status network not 200');
-						}
 						if(response.status === 200){
 							statusMessage.textContent = succesMessage;
 							setTimeout(()=>statusMessage.textContent = '', 2000);
@@ -480,7 +477,7 @@ window.addEventListener('DOMContentLoaded', function(){
 									elem.classList.remove('success');
 								}
 							});
-						}
+						}throw new Error('status network not 200');
 					})
 					.catch((error) =>{
 						statusMessage.textContent = errorMessage;
@@ -492,7 +489,7 @@ window.addEventListener('DOMContentLoaded', function(){
 		});
 	
 		const postData = (formData) =>{
-			return fetch('./server.php', {
+			return fetch('./server1.php', {
 				method: 'POST',
 				headers: {'Content-Type': 'multipart/form-data'},
 				body: formData
