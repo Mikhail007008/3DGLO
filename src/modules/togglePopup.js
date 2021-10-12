@@ -13,9 +13,9 @@ const togglePopup = () =>{
 				let timer = setInterval(() => {
 				let timePassed = Date.now() - start;
 		
-				popupContent.style.left = timePassed / 1.4 + 'px';
-		
-				if (timePassed > 800) {clearInterval(timer);}
+				popupContent.style.left = timePassed / 0.5 + 'px';
+			
+				if (timePassed > 300) {clearInterval(timer);}
 		
 				});
 			}

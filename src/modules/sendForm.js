@@ -45,12 +45,12 @@ const validator = (elem) =>{
 				elem.nextElementSibling.remove('validator-error');}
 	};
 
-	const patternPhone = /[^0-9\+]/,
+	const patternPhone = /([0-9\+]){11}/,
 		patternName = /[^а-яА-Я ]/,
 		patternMess = /[^а-яА-Я0-9\.,]/;
 
 		if(elem.getAttribute('name') === 'user_phone'){
-			if(!elem.value || patternPhone.test(elem.value)){
+			if(!elem.value || !patternPhone.test(elem.value)){
 				showError(elem);
 			}else{
 				showSuccess(elem);
@@ -87,8 +87,13 @@ const validator = (elem) =>{
 			statusMessage.textContent = loadMessage;
 
 			const formData = new FormData(target);
+			let body = {};
+
+			formData.forEach((val, key) =>{
+				body[key] = val;
+			});
 			
-			postData(formData)
+			postData(body)
 				.then((response) =>{
 					if(response.status === 200){
 						statusMessage.textContent = succesMessage;
@@ -99,7 +104,8 @@ const validator = (elem) =>{
 								elem.classList.remove('success');
 							}
 						});
-					}throw new Error('status network not 200');
+					}else{throw new Error('status network not 200');}
+					
 				})
 				.catch((error) =>{
 					statusMessage.textContent = errorMessage;
@@ -110,11 +116,11 @@ const validator = (elem) =>{
 		}
 	});
 
-	const postData = (formData) =>{
+	const postData = (body) =>{
 		return fetch('./server.php', {
 			method: 'POST',
-			headers: {'Content-Type': 'multipart/form-data'},
-			body: formData
+			headers: {'Content-Type': 'application/json'},
+			body: JSON.stringify(body)
 		});
 	};
 };
