@@ -46,8 +46,8 @@ const validator = (elem) =>{
 	};
 
 	const patternPhone = /([0-9\+]){11}/,
-		patternName = /[^а-яА-Я ]/,
-		patternMess = /[^а-яА-Я0-9\.,]/;
+		patternName = /[а-яА-Я ]/,
+		patternMess = /[а-яА-Я0-9\.,]/;
 
 		if(elem.getAttribute('name') === 'user_phone'){
 			if(!elem.value || !patternPhone.test(elem.value)){
@@ -56,13 +56,13 @@ const validator = (elem) =>{
 				showSuccess(elem);
 			}
 		}else if(elem.getAttribute('name') === 'user_name'){
-			if(!elem.value || patternName.test(elem.value)){
+			if(!elem.value || !patternName.test(elem.value)){
 				showError(elem);
 			}else{
 				showSuccess(elem);
 			}
 		}else if(elem.getAttribute('name') === 'user_message'){
-			if(!elem.value || patternMess.test(elem.value)){
+			if(!elem.value || !patternMess.test(elem.value)){
 				showError(elem);
 			}else{
 				showSuccess(elem);
