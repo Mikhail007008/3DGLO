@@ -89,9 +89,9 @@ window.addEventListener('DOMContentLoaded', function(){
 					let timer = setInterval(() => {
 					let timePassed = Date.now() - start;
 			
-					popupContent.style.left = timePassed / 1.4 + 'px';
+					popupContent.style.left = timePassed / 0.5 + 'px';
 			
-					if (timePassed > 800) {clearInterval(timer);}
+					if (timePassed > 300) {clearInterval(timer);}
 			
 					});
 				}
@@ -423,24 +423,24 @@ window.addEventListener('DOMContentLoaded', function(){
 					elem.nextElementSibling.remove('validator-error');}
 		};
 
-		const patternPhone = /[^0-9\+]/,
-			patternName = /[^а-яА-Я ]/,
-			patternMess = /[^а-яА-Я0-9\.,]/;
+		const patternPhone = /([0-9\+]){11}/,
+			patternName = /[а-яА-Я ]/,
+			patternMess = /[а-яА-Я0-9\.,]/;
 
 			if(elem.getAttribute('name') === 'user_phone'){
-				if(!elem.value || patternPhone.test(elem.value)){
+				if(!elem.value || !patternPhone.test(elem.value)){
 					showError(elem);
 				}else{
 					showSuccess(elem);
 				}
 			}else if(elem.getAttribute('name') === 'user_name'){
-				if(!elem.value || patternName.test(elem.value)){
+				if(!elem.value || !patternName.test(elem.value)){
 					showError(elem);
 				}else{
 					showSuccess(elem);
 				}
 			}else if(elem.getAttribute('name') === 'user_message'){
-				if(!elem.value || patternMess.test(elem.value)){
+				if(!elem.value || !patternMess.test(elem.value)){
 					showError(elem);
 				}else{
 					showSuccess(elem);
@@ -465,34 +465,42 @@ window.addEventListener('DOMContentLoaded', function(){
 				statusMessage.textContent = loadMessage;
 
 				const formData = new FormData(target);
+				let body = {};
+
+				formData.forEach((val, key) =>{
+					body[key] = val;
+				});
 				
-				postData(formData)
-					.then((response) =>{
-						if(response.status === 200){
-							statusMessage.textContent = succesMessage;
-							setTimeout(()=>statusMessage.textContent = '', 2000);
-							inputs.forEach((elem) =>{
-								if(elem.getAttribute('name')){
-									elem.value = '';
-									elem.classList.remove('success');
-								}
-							});
-						}throw new Error('status network not 200');
-					})
-					.catch((error) =>{
+				(async() =>{
+					try{
+						await postData(body);
+					} catch(error){
 						statusMessage.textContent = errorMessage;
 						console.error(error);
-					});
+					}
+				})();
 			} else{
 				event.preventDefault();
 			}
 		});
 	
-		const postData = (formData) =>{
-			return fetch('./server1.php', {
+		const postData = async (body) =>{
+			const response = await fetch('./server.php', {
 				method: 'POST',
-				headers: {'Content-Type': 'multipart/form-data'},
-				body: formData
+				headers: {'Content-Type': 'application/json'},
+				body: JSON.stringify(body)
+			});
+
+			if(!response.ok){
+				throw new Error('status network not 200');
+			}
+				statusMessage.textContent = succesMessage;
+				setTimeout(()=>statusMessage.textContent = '', 2000);
+				inputs.forEach((elem) =>{
+					if(elem.getAttribute('name')){
+						elem.value = '';
+						elem.classList.remove('success');
+					}
 			});
 		};
 	};
