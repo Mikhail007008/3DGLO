@@ -41,7 +41,7 @@ window.addEventListener('DOMContentLoaded', function(){
 		setInterval(updateClock);
 	};
 
-	countTimer('14 september 2021');
+	countTimer('31 december 2021');
 
 	//Menu
 	const toggleMenu = () =>{
